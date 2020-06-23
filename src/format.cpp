@@ -17,17 +17,21 @@ string Format::ElapsedTime(long time) {
   long days = 0;
   long hours = 0;
   long minutes = 0;
+  long seconds = 0;
   
   days = time/day_secs;
+  
   hours = (time - days * day_secs) / hour_secs;
   if(hours < 0){hours = 0;}
   
   minutes = (time - days * day_secs - hours * hour_secs) / min_secs;
   if(minutes < 0){ minutes = 0;}
   
-  //Get (at least) a two character formatted string for each value : days, hours, minutes
+  seconds = (time - days * day_secs - hours * hour_secs - minutes * min_secs);
+  
+  //Get (at least) a two character formatted string for each value : hours, minutes, seconds
   //Example : 1 becomes 01 but 22 and 222 remain the same.
-  uptime = Format::TimeLengthFormat(days) + ":" + Format::TimeLengthFormat(hours) + ":" + Format::TimeLengthFormat(minutes);
+  uptime = Format::TimeLengthFormat(hours) + ":" + Format::TimeLengthFormat(minutes) + ":" + Format::TimeLengthFormat(seconds);
   
   return uptime; 
 }

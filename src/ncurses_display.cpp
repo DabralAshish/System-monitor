@@ -3,6 +3,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <iostream>
 
 #include "format.h"
 #include "ncurses_display.h"
@@ -10,6 +11,7 @@
 
 using std::string;
 using std::to_string;
+
 
 // 50 bars uniformly displayed from 0 - 100 %
 // 2% is one bar(|)
@@ -87,7 +89,11 @@ void NCursesDisplay::Display(System& system, int n) {
   noecho();       // do not print input values
   cbreak();       // terminate ncurses on ctrl + c
   start_color();  // enable color
-
+  
+  if(n > system.TotalProcesses()){
+    n = system.TotalProcesses();
+  }
+  
   int x_max{getmaxx(stdscr)};
   WINDOW* system_window = newwin(9, x_max - 1, 0, 0);
   WINDOW* process_window =

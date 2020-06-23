@@ -18,28 +18,54 @@ using std::vector;
 using namespace LinuxParser;
 using namespace Format;
 
-// TODO: Return the system's CPU
-Processor& System::Cpu() { return cpu_; }
+// Return the system's CPU
+Processor& System::Cpu() {
 
-// TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { return processes_; }
+  auto cpu_data = LinuxParser::CpuUtilization();
+  
+  for(int i=0; i < cpu_data.size(); i++){
+    cpu_.current_utilization[i] = stof(cpu_data[i]) ;
+  }
+  
+  return cpu_; 
+}
 
-// TODO: Return the system's kernel identifier (string)
+// Return a container composed of the system's processes
+vector<Process>& System::Processes() { 
+  
+  vector<Process> processes;
+  
+  auto pids = LinuxParser::Pids();
+  
+  for(int i = 0; i < pids.size(); i++){
+  	Process process;
+    process.pid = pids[i];
+    process.uid = LinuxParser::Uid(pids[i]);
+    process.username = LinuxParser::User(pids[i]);
+    process.uptime = LinuxParser::UpTime(pids[i]);
+    process.ram = LinuxParser::Ram(pids[i]);
+    processes_.push_back(process);
+  }
+  
+  return processes_; 
+}
+
+// Return the system's kernel identifier (string)
 std::string System::Kernel() { return LinuxParser::Kernel(); }
 
-// TODO: Return the system's memory utilization
+// Return the system's memory utilization
 float System::MemoryUtilization() { 
   return LinuxParser::MemoryUtilization(); 
 }
 
-// TODO: Return the operating system name
+// Return the operating system name
 std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
 
-// TODO: Return the number of processes actively running on the system
+// Return the number of processes actively running on the system
 int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 
-// TODO: Return the total number of processes on the system
-int System::TotalProcesses() { return 0; }
+// Return the total number of processes on the system
+int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
-// TODO: Return the number of seconds since the system started running
+// Return the number of seconds since the system started running
 long int System::UpTime() { return LinuxParser::UpTime();}
